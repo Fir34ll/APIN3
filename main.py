@@ -50,11 +50,11 @@ def create_buyer(buyer: schemas.BuyerCreate, db: Session = Depends(get_db)):
 def create_bid(bid: schemas.BidCreate, db: Session = Depends(get_db)):
     item = db.query(models.Item).filter(models.Item.id == bid.item_id).first()
     if item is None:
-        raise HTTPException(status_code=404, detail="Item not found")
+        raise HTTPException(status_code=404, detail="Item nao encontrado")
     if datetime.fromisoformat(item.auction_end_time) < datetime.now():
-        raise HTTPException(status_code=400, detail="Auction has ended")
+        raise HTTPException(status_code=400, detail="finalizado")
     if bid.amount <= item.current_bid:
-        raise HTTPException(status_code=400, detail="Bid amount must be greater than current bid")
+        raise HTTPException(status_code=400, detail="O valor do lance deve ser maior que o lance atual")
     item.current_bid = bid.amount
     db_bid = models.Bid(**bid.dict())
     db.add(db_bid)
